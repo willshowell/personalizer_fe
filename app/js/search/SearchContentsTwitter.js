@@ -2,6 +2,7 @@ var React = require('react');
 
 var UsernameField = require('./UsernameField');
 var RadioGroup = require('./RadioGroup');
+var Toggle = require('./Toggle');
 
 var tweetCountOptions = [10,100,1000];
 
@@ -11,19 +12,35 @@ module.exports = React.createClass({
     return {
       username: '',
       tweetCount: tweetCountOptions[0],
-      includeRetweets: false
+      includeRetweets: false,
+      showInputLabel: false
     };
   },
   
   handleUsernameInput: function(newUsername) {
     this.setState({
-      username: newUsername
+      username: newUsername,
+      showInputLabel: false
     });
   },
   
   handleGo: function() {
-    alert("Username: " + this.state.username + "; count: " + this.state.tweetCount +
-          "; include: " + this.state.includeRetweets);
+  
+    if (this.state.username == '') {
+      this.setState({
+        showInputLabel: true
+      });
+    } 
+    else {
+      var request = "_twitter?handle="+this.state.username
+                    +"&count="+this.state.tweetCount
+                    +"&include_retweets="+(this.state.includeRetweets?1:0);
+      var blurb = this.state.tweetCount + " tweets with" + 
+                  (this.state.includeRetweets ? " " : "out ") + 
+                  "retweets";
+      this.props.formSubmit(request, this.state.username, blurb);
+    }
+    
   },
   
   handleTweetCountInput: function(newTweetCount) {
@@ -44,7 +61,8 @@ module.exports = React.createClass({
         <div className="column">
           <div className="ui form">
             <UsernameField 
-              username={this.state.username} 
+              username={this.state.username}
+              showInputLabel={this.state.showInputLabel}
               onTextChange={this.handleUsernameInput}
               onGo={this.handleGo} />
           </div>
@@ -57,19 +75,15 @@ module.exports = React.createClass({
             <RadioGroup 
               options={tweetCountOptions} 
               groupLabel="Tweets to parse"
-              selectedOption={this.tweetCount} 
+              selectedOption={this.state.tweetCount} 
               onNewSelection={this.handleTweetCountInput} />
           </div>
-            <div className="ui form">
-            <div className="grouped fields">
-              <label>Include retweets?</label>
-              <div className="field">
-                <div className="ui toggle checkbox">
-                  <input type="checkbox" name="public" />
-                  <label></label>
-                </div>
-              </div>
-            </div>                 
+          <div className="ui form">
+            <Toggle
+              groupLabel="Include retweets?"
+              groupId="retweets"
+              selectedOption={this.state.includeRetweets}
+              onNewSelection={this.handleIncludeRetweetsUpdate} />            
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ module.exports = React.createClass({
 
   render: function() {
     return (
-      <div className="ui center aligned text container">
+      <div className="ui center aligned main text container">
         <h1 className="ui header">
           Personality Analyzer
           <div className="sub header">profile your profile</div>
@@ -28,7 +28,8 @@ module.exports = React.createClass({
           menuItem={this.state.menuItem} 
           onMenuItemChange={this.handleMenuItemChange} />
         <SearchContents
-          menuItem={this.state.menuItem} />
+          menuItem={this.state.menuItem} 
+          {...this.props} />
       </div>
     );
   }	

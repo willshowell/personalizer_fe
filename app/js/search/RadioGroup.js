@@ -3,16 +3,14 @@ var React = require('react');
 
 module.exports = React.createClass({
   
-  
   handleSelectionChange: function(e) {
-    console.log(e);
-    console.log("selection tried to change to "+e.currentTarget);
+    this.props.onNewSelection(e.target.id);
   },
   
   render: function() {
-    var optionFields = this.props.options.map( function(option) {
+    
+    var optionFields = this.props.options.map( function(option) {      
       var isChecked = (option == this.props.selectedOption) ? "checked" : null;
-      console.log(this.props.selectedOption);
       return (
         <div className="field" key={option}>
           <div className="ui radio checkbox">
@@ -21,8 +19,9 @@ module.exports = React.createClass({
               value={option}
               defaultChecked={isChecked}
               onClick = {this.handleSelectionChange}
+              id = {option}
               className="hidden" />
-            <label>{option}</label>
+            <label htmlFor={option}>{option}</label>
           </div>
         </div>     
       );
